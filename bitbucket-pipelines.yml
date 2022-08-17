@@ -18,5 +18,3 @@ definitions:
           - git pull
           - git push github $BITBUCKET_BRANCH
 
-pipelines:
-  branches:*
