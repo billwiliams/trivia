@@ -1,8 +1,9 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+from error_routes import errors
 
 from models import setup_db, Question, Category
 
@@ -12,6 +13,7 @@ QUESTIONS_PER_PAGE = 10
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+    app.register_blueprint(errors)
     setup_db(app)
 
     CORS(app)
