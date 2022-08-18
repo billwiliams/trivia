@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
 from error_routes import errors
+from category_routes import categories
 
 from models import setup_db, Question, Category
 
@@ -14,6 +15,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     app.register_blueprint(errors)
+    app.register_blueprint(categories)
     setup_db(app)
 
     CORS(app)
