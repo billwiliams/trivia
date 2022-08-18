@@ -12,4 +12,5 @@ pipelines:
   default:
     - step:
         script:
-          - git push --mirror git@github.com:billwiliams/trivia.git
+          #- git push --mirror git@github.com:billwiliams/trivia.git
+          - git push git@github.com:billwiliams/trivia.git --all
