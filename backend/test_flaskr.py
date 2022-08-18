@@ -17,7 +17,7 @@ class TriviaTestCase(unittest.TestCase):
         self.database_name = "trivia_test"
         self.database_user = 'postgres'
         self.database_pass = 'abc'
-        self.database_path = 'postgresql://{}:{}@{}/{}'.format(
+        self.database_path = "postgresql://{}:{}@{}/{}".format(
             self.database_user, self.database_pass, 'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
