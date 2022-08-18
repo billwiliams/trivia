@@ -36,8 +36,8 @@ def bad_request(error):
 def not_allowed(error):
     return (
         jsonify({"success": False,
-                 "error": 400,
-                 "message": "not allowed"}),
+                 "error": 405,
+                 "message": "method not allowed"}),
         405,
 
     )
