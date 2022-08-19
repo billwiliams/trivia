@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Blueprint, jsonify, abort, request
 from models import Question, Category
 from utils import paginate
@@ -26,3 +27,26 @@ def retrieve_questions():
             "current_category": 0,
         }
     )
+
+
+@questions.route('/questions/<int:question_id>', methods['DELETE'])
+def delete_question(question_id):
+    try:
+        question = Question.query.filter(
+            Question.id == question_id).one_or_none()
+
+        if question is None:
+            abort(404)
+
+        question.delete()
+
+        return jsonify(
+            {
+                "success": True,
+                "deleted": question_id,
+
+            }
+        )
+
+    except:
+        abort(422)

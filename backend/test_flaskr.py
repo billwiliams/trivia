@@ -78,6 +78,27 @@ class TriviaTestCase(unittest.TestCase):
 
     # Questions Tests
 
+    # delete question ->change id when running multiple times since test fails if book already deleted
+    def test_delete_question(self):
+        res = self.client().delete("/questions/6")
+        data = json.loads(res.data)
+
+        question = Question.query.filter(Question.id == 6).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["deleted"], 6)
+
+        self.assertEqual(question, None)
+
+    def test_422_if_book_does_not_exist(self):
+        res = self.client().delete("/questions/1200")
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "unprocessable")
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
