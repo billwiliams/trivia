@@ -5,6 +5,7 @@ from flask_cors import CORS
 import random
 from error_routes import errors
 from category_routes import categories
+from questions_routes import questions
 
 from models import setup_db, Question, Category
 
@@ -14,8 +15,12 @@ QUESTIONS_PER_PAGE = 10
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+    # Error routes
     app.register_blueprint(errors)
+    # Category routes
     app.register_blueprint(categories)
+    # Questions Routes
+    app.register_blueprint(questions)
     setup_db(app)
 
     CORS(app)
