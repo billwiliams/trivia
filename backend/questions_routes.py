@@ -29,7 +29,7 @@ def retrieve_questions():
     )
 
 
-@questions.route('/questions/<int:question_id>', methods['DELETE'])
+@questions.route('/questions/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):
     try:
         question = Question.query.filter(
