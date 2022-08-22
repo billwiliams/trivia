@@ -12,7 +12,7 @@ QUESTIONS_PER_PAGE = 10
 def retrieve_questions():
     questions_selection = Question.query.order_by(
         Question.id).join(Category, Category.id == Question.category).all()
-    print(questions_selection[0])
+
     questions = paginate(request, questions_selection, QUESTIONS_PER_PAGE)
     categories = [item.type for item in Category.query.all()]
     if len(questions) == 0:
@@ -24,7 +24,7 @@ def retrieve_questions():
             "questions": questions,
             "total_questions": len(questions_selection),
             "categories": categories,
-            "current_category": 0,
+            "current_category": [],
         }
     )
 
