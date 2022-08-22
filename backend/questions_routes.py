@@ -1,7 +1,8 @@
 from crypt import methods
 from flask import Blueprint, jsonify, abort, request
-from models import Question, Category
+from models import Question, Category, db
 from utils import paginate
+import sys
 
 
 questions = Blueprint('questions', __name__)
@@ -51,14 +52,15 @@ def delete_question(question_id):
     except:
         abort(422)
 
-@questions.route('/questions',methods=['POST'])
+
+@questions.route('/questions', methods=['POST'])
 def create_search_question():
     body = request.get_json()
 
     new_question = body.get("question", None)
     new_answer = body.get("answer", None)
     new_category = body.get("category", None)
-    new_difficulty= body.get("difficulty", None)
+    new_difficulty = body.get("difficulty", None)
     search = body.get("search", None)
 
     try:
@@ -66,7 +68,8 @@ def create_search_question():
             selection = Question.query.order_by(Question.id).filter(
                 Question.question.ilike("%{}%".format(search))
             )
-            current_questions = paginate(request,selection , QUESTIONS_PER_PAGE)
+            current_questions = paginate(
+                request, selection, QUESTIONS_PER_PAGE)
 
             return jsonify(
                 {
@@ -77,13 +80,20 @@ def create_search_question():
             )
 
         else:
-            question = Question(question=new_question, answer=new_answer, category=new_category,difficulty=new_difficulty)
+            print(new_question)
+            print(new_answer)
+            print(new_category)
+            print(new_difficulty)
+            question = Question(question=new_question, answer=new_answer,
+                                category=new_category, difficulty=new_difficulty)
             question.insert()
+
+            print(sys.exc_info())
 
             return jsonify(
                 {
                     "success": True,
-                   
+
                 }
             )
 

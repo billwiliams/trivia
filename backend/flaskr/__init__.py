@@ -1,4 +1,5 @@
 import os
+from sqlite3 import dbapi2
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -15,6 +16,7 @@ QUESTIONS_PER_PAGE = 10
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+
     # Error routes
     app.register_blueprint(errors)
     # Category routes
@@ -22,7 +24,6 @@ def create_app(test_config=None):
     # Questions Routes
     app.register_blueprint(questions)
     setup_db(app)
-
     CORS(app)
     # CORS Headers
 
