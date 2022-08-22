@@ -20,6 +20,8 @@ class TriviaTestCase(unittest.TestCase):
         self.database_path = "postgresql://{}:{}@{}/{}".format(
             self.database_user, self.database_pass, 'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
+        self.new_question = {"question": "Best Country in Africa?",
+                             "answer": "Kenya", "category": 1, "difficulty": 4}
 
         # binds the app to the current context
         with self.app.app_context():
@@ -98,6 +100,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "unprocessable")
+
+    # Post Questions
+    def test_create_new_question(self):
+
+        res = self.client().post("/questions", json=self.new_question)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+
+    def test_405_if_book_creation_not_allowed(self):
+        res = self.client().post("/questions/13", json=self.new_question)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "method not allowed")
 
 
 # Make the tests conveniently executable

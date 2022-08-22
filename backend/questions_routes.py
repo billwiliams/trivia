@@ -80,15 +80,10 @@ def create_search_question():
             )
 
         else:
-            print(new_question)
-            print(new_answer)
-            print(new_category)
-            print(new_difficulty)
+
             question = Question(question=new_question, answer=new_answer,
                                 category=new_category, difficulty=new_difficulty)
             question.insert()
-
-            print(sys.exc_info())
 
             return jsonify(
                 {
