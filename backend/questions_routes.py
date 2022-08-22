@@ -14,7 +14,7 @@ def retrieve_questions():
         Question.id).join(Category, Category.id == Question.category).all()
 
     questions = paginate(request, questions_selection, QUESTIONS_PER_PAGE)
-    categories = [item.type for item in Category.query.all()]
+    categories = {item.id: item.type for item in Category.query.all()}
     if len(questions) == 0:
         abort(404)
 
