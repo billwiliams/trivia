@@ -47,8 +47,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["total_categories"])
         self.assertTrue(len(data["categories"]))
 
-    def test_404_sent_requesting_beyond_paginated_categories(self):
-        res = self.client().get("/categories?page=1100")
+    def test_404_sent_request_for_wrong_enpoint(self):
+        res = self.client().get("/categores")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
