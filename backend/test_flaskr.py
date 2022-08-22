@@ -121,7 +121,7 @@ class TriviaTestCase(unittest.TestCase):
     # Category Questions Test
 
     def test_get_category_quetions(self):
-        res = self.client().get("/category/questions/2")
+        res = self.client().get("categories/questions/2")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -131,7 +131,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["current_category"]))
 
     def test_404_sent_requesting_questions_from_non_existence_category(self):
-        res = self.client().get("/category/questions/220000")
+        res = self.client().get("/categories/questions/2220000")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
