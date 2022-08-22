@@ -50,3 +50,42 @@ def delete_question(question_id):
 
     except:
         abort(422)
+
+@questions.route('/questions',methods=['POST'])
+def create_search_question():
+    body = request.get_json()
+
+    new_question = body.get("question", None)
+    new_answer = body.get("answer", None)
+    new_category = body.get("category", None)
+    new_difficulty= body.get("difficulty", None)
+    search = body.get("search", None)
+
+    try:
+        if search:
+            selection = Question.query.order_by(Question.id).filter(
+                Question.question.ilike("%{}%".format(search))
+            )
+            current_questions = paginate(request,selection , QUESTIONS_PER_PAGE)
+
+            return jsonify(
+                {
+                    "success": True,
+                    "questions": current_questions,
+                    "total_questions": len(selection.all()),
+                }
+            )
+
+        else:
+            question = Question(question=new_question, answer=new_answer, category=new_category,difficulty=new_difficulty)
+            question.insert()
+
+            return jsonify(
+                {
+                    "success": True,
+                   
+                }
+            )
+
+    except:
+        abort(422)
