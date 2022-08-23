@@ -128,11 +128,11 @@ def retrieve_category_questions(category_id):
 # Get questions for quizz not previously displayed
 
 
-@questions.route('/quizz', methods=['POST'])
+@questions.route('/quizzes', methods=['POST'])
 def play_quizz():
     body = request.get_json()
 
-    category = body.get("category", None)
+    category = body.get("quiz_category", None)
     previous_questions = body.get("previous_questions", None)
 
     try:

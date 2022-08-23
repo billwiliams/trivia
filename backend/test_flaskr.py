@@ -142,7 +142,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_quizz_quetions(self):
         res = self.client().post(
-            "/quizz", json={"category": 1, "previous_questions": [20, 21]})
+            "/quizzes", json={"quiz_category": 1, "previous_questions": [20, 21]})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -153,7 +153,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_422_sent_requesting_quizz_from_non_existence_category(self):
         res = self.client().post(
-            "/quizz", json={"category": 30, "previous_questions": [20, 21]})
+            "/quizzes", json={"quiz_category": 30, "previous_questions": [20, 21]})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
@@ -162,7 +162,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_405_sent_requesting_quizz_from_with_non_allowable_method(self):
         res = self.client().patch(
-            "/quizz", json={"category": 3, "previous_questions": [20, 21]})
+            "/quizzes", json={"quiz_category": 3, "previous_questions": [20, 21]})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 405)
