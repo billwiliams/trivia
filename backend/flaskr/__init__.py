@@ -114,4 +114,16 @@ def create_app(test_config=None):
     # including 404 and 422.
     # """
 
+    # adding this error due to project rubric which states one to use @app.errorhandler
+    # otherwise all other errors in error_routes.py blueprint file
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return (
+            jsonify({"success": False,
+                    "error": 500,
+                     "message": "Internal server error"}),
+            500,
+
+        )
+
     return app
