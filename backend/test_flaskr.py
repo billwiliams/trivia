@@ -138,6 +138,37 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "resource not found")
 
+    # Category Questions Test
+
+    def test_get_quizz_quetions(self):
+        res = self.client().post(
+            "/quizz", json={"category": 1, "previous_questions": [20, 21]})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["total_questions"])
+        self.assertTrue(len(data["questions"]))
+        self.assertTrue(len(data["current_category"]))
+
+    def test_422_sent_requesting_quizz_from_non_existence_category(self):
+        res = self.client().post(
+            "/quizz", json={"category": 30, "previous_questions": [20, 21]})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "unprocessable")
+
+    def test_405_sent_requesting_quizz_from_with_non_allowable_method(self):
+        res = self.client().patch(
+            "/quizz", json={"category": 3, "previous_questions": [20, 21]})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "method not allowed")
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
