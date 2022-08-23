@@ -124,3 +124,37 @@ def retrieve_category_questions(category_id):
             "current_category": [categories[category_id]],
         }
     )
+
+# Get questions for quizz not previously displayed
+
+
+@questions.route('/quizz', methods=['POST'])
+def play_quizz():
+    body = request.get_json()
+
+    category = body.get("category", None)
+    previous_questions = body.get("previous_questions", None)
+
+    try:
+        print(previous_questions)
+
+        questions_not_displayed = Question.query.order_by(
+            Question.id).filter(Question.category == category).filter(Question.id.not_in(previous_questions)).all()
+        questions = paginate(
+            request, questions_not_displayed, QUESTIONS_PER_PAGE)
+        categories = {item.id: item.type for item in Category.query.all()}
+        if len(questions) == 0:
+            abort(404)
+        return jsonify(
+            {
+                "success": True,
+                "questions": questions,
+                "total_questions": len(questions_not_displayed),
+                "categories": categories,
+                "current_category": [categories[category]],
+
+            }
+        )
+
+    except:
+        abort(422)
