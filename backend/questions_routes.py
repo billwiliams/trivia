@@ -1,4 +1,5 @@
 from crypt import methods
+import random
 from flask import Blueprint, jsonify, abort, request
 from models import Question, Category, db
 from utils import paginate
@@ -67,21 +68,21 @@ def create_search_question():
     new_answer = body.get("answer", None)
     new_category = body.get("category", None)
     new_difficulty = body.get("difficulty", None)
-    search = body.get("search", None)
+    search = body.get("searchTerm", None)
 
     try:
         if search:
             selection = Question.query.order_by(Question.id).filter(
                 Question.question.ilike("%{}%".format(search))
-            )
-            current_questions = paginate(
-                request, selection, QUESTIONS_PER_PAGE)
-
+            ).all()
+            questions = paginate(request, selection, QUESTIONS_PER_PAGE)
             return jsonify(
                 {
                     "success": True,
-                    "questions": current_questions,
-                    "total_questions": len(selection.all()),
+                    "questions": questions,
+                    "total_questions": len(selection),
+                    "current_category": [],
+                    "categories": {item.id: item.type for item in Category.query.all()},
                 }
             )
 
@@ -104,7 +105,7 @@ def create_search_question():
 # Get questions from a category
 
 
-@questions.route('/categories/questions/<int:category_id>', methods=['GET'])
+@questions.route('/categories/<int:category_id>/questions', methods=['GET'])
 def retrieve_category_questions(category_id):
     category_questions_selection = Question.query.order_by(
         Question.id).filter(Question.category == category_id).all()
@@ -131,30 +132,32 @@ def retrieve_category_questions(category_id):
 @questions.route('/quizzes', methods=['POST'])
 def play_quizz():
     body = request.get_json()
-
-    category = body.get("quiz_category", None)
+    quiz_category = body.get("quiz_category", None)
+    category = int(quiz_category["id"])
     previous_questions = body.get("previous_questions", None)
 
     try:
-
-        questions_not_displayed = Question.query.order_by(
-            Question.id).filter(Question.category == category).filter(
+        if category == 0:
+            questions_not_displayed = Question.query.order_by(
+                Question.id).filter(
                 Question.id.not_in(previous_questions)).all()
-        questions = paginate(
-            request, questions_not_displayed, QUESTIONS_PER_PAGE)
-        categories = {item.id: item.type for item in Category.query.all()}
-        if len(questions) == 0:
+        else:
+
+            questions_not_displayed = Question.query.order_by(
+                Question.id).filter(Question.category == category).filter(
+                    Question.id.not_in(previous_questions)).all()
+        if len(questions_not_displayed) == 0:
             abort(404)
+        question = random.choice(questions_not_displayed)
+        question = question.format()
         return jsonify(
             {
                 "success": True,
-                "questions": questions,
-                "total_questions": len(questions_not_displayed),
-                "categories": categories,
-                "current_category": [categories[category]],
+                "question": question,
 
             }
         )
 
     except:
+        print(sys.exc_info())
         abort(422)

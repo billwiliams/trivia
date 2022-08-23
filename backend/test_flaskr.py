@@ -117,11 +117,33 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 405)
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "method not allowed")
+    # Search Questions
+
+    def test_search_question(self):
+
+        res = self.client().post(
+            "/questions", json={"searchTerm": "Tom Hanks"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["total_questions"])
+        self.assertTrue(data["questions"])
+
+    def test_zero_result_if_search_has_no_questions(self):
+        res = self.client().post(
+            "/questions", json={"searchTerm": "&&&&#$"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["total_questions"], 0)
+        self.assertFalse(data["questions"])
 
     # Category Questions Test
 
     def test_get_category_quetions(self):
-        res = self.client().get("categories/questions/2")
+        res = self.client().get("categories/2/questions")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -131,7 +153,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["current_category"]))
 
     def test_404_sent_requesting_questions_from_non_existence_category(self):
-        res = self.client().get("/categories/questions/2220000")
+        res = self.client().get("/categories/222000/questions")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -142,18 +164,16 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_quizz_quetions(self):
         res = self.client().post(
-            "/quizzes", json={"quiz_category": 1, "previous_questions": [20, 21]})
+            "/quizzes", json={"quiz_category": {"id": 1}, "previous_questions": [20, 21]})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
-        self.assertTrue(data["total_questions"])
-        self.assertTrue(len(data["questions"]))
-        self.assertTrue(len(data["current_category"]))
+        self.assertTrue(data["question"])
 
     def test_422_sent_requesting_quizz_from_non_existence_category(self):
         res = self.client().post(
-            "/quizzes", json={"quiz_category": 30, "previous_questions": [20, 21]})
+            "/quizzes", json={"quiz_category": {"id": 30}, "previous_questions": [20, 21]})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
