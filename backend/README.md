@@ -38,15 +38,29 @@ psql trivia < trivia.psql
 
 ### Run the Server
 
-From within the `./src` directory first ensure you are working using your created virtual environment.
 
-To run the server, execute:
-
-```bash
-flask run --reload
+#### Backend
+To run the application navigate to the backend folder and  run the following commands: 
+```
+export FLASK_APP=flaskr
+export FLASK_ENV=development
+flask run
 ```
 
-The `--reload` flag will detect file changes and restart the server automatically.
+These commands put the application in development and directs our application to use the `__init__.py` file in our flaskr folder. Working in development mode shows an interactive debugger in the console and restarts the server whenever changes are made. If running locally on Windows, look for the commands in the [Flask documentation](http://flask.pocoo.org/docs/1.0/tutorial/factory/).
+
+The application is run on `http://127.0.0.1:5000/` by default and is a proxy in the frontend configuration. 
+
+
+#### Frontend
+
+From the frontend folder, run the following commands to start the client: 
+```
+npm install // only once to install dependencies
+npm start 
+```
+
+By default, the frontend will run on localhost:3000. 
 
 ## To Do Tasks
 
