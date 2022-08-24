@@ -1,5 +1,5 @@
 # Backend - Trivia API
-This project is a quizz trivia game.User can play the game e based on certain categories or general. questions with the ability to show  answers.On finishing the game the user is shown the final score. Questions shown to the user are selected at random. Questions  can be added or deleted from the database.
+This project is a quizz trivia game.User can play the game  based on certain categories or general questions with the ability to show  answers.The game provides five questions of the chosen category then ends. If a category has less than five questions, the gane ends when all  the questions are displayed.On finishing the game the user is shown the final score. Questions shown to the user are selected at random and the user   can add or delete questions from the database.
 
 ## Setting up the Backend
 
