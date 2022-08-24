@@ -147,7 +147,12 @@ def play_quizz():
                 Question.id).filter(Question.category == category).filter(
                     Question.id.not_in(previous_questions)).all()
         if len(questions_not_displayed) == 0:
-            abort(404)
+            return jsonify(
+                {
+                    "success": True,
+                    "forceEnd": True,
+
+                })
         question = random.choice(questions_not_displayed)
         question = question.format()
         return jsonify(
