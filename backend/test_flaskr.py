@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flaskr import create_app
 from models import setup_db, Question, Category
+from settings import TEST_DB_NAME, TEST_DB_USER, TEST_DB_PASSWORD
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -14,9 +15,9 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "trivia_test"
-        self.database_user = 'postgres'
-        self.database_pass = 'abc'
+        self.database_name = TEST_DB_NAME
+        self.database_user = TEST_DB_USER
+        self.database_pass = TEST_DB_PASSWORD
         self.database_path = "postgresql://{}:{}@{}/{}".format(
             self.database_user, self.database_pass, 'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
@@ -171,14 +172,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertTrue(data["question"])
 
-    def test_422_sent_requesting_quizz_from_non_existence_category(self):
+    def test_zero_questions_sent_requesting_quizz_from_non_existence_category(self):
         res = self.client().post(
             "/quizzes", json={"quiz_category": {"id": 30}, "previous_questions": [20, 21]})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "unprocessable")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["forceEnd"], True)
 
     def test_405_sent_requesting_quizz_from_with_non_allowable_method(self):
         res = self.client().patch(
